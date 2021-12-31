@@ -10,9 +10,11 @@ namespace Lone079
 
 		private Harmony hInstance;
 
+		private bool state = false;
+
 		public override void OnEnabled()
 		{
-			base.OnEnabled();
+			if (state) return;
 
 			if (!Config.IsEnabled) return;
 
@@ -28,11 +30,14 @@ namespace Lone079
 			Exiled.Events.Handlers.Player.Left += ev.OnPlayerLeave;
 			Exiled.Events.Handlers.Scp106.Containing += ev.OnScp106Contain;
 			Exiled.Events.Handlers.Warhead.Detonated += ev.OnDetonated;
+
+			state = true;
+			base.OnEnabled();
 		}
 
 		public override void OnDisabled()
 		{
-			base.OnDisabled();
+			if (!state) return;
 
 			Exiled.Events.Handlers.Server.RoundStarted -= ev.OnRoundStart;
 			Exiled.Events.Handlers.Player.Died -= ev.OnPlayerDied;
@@ -40,9 +45,12 @@ namespace Lone079
 			Exiled.Events.Handlers.Scp106.Containing -= ev.OnScp106Contain;
 			Exiled.Events.Handlers.Warhead.Detonated -= ev.OnDetonated;
 
-			hInstance.UnpatchAll();
+			hInstance.UnpatchAll(hInstance.Id);
 
 			ev = null;
+
+			state = false;
+			base.OnDisabled();
 		}
 
 		public override string Name => "Lone079";

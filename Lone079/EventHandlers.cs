@@ -34,7 +34,8 @@ namespace Lone079
 
 		private IEnumerator<float> Check079(float delay = 1f)
 		{
-			if (Map.ActivatedGenerators != 3 && canChange)
+			//if (Map.ActivatedGenerators != 3 && canChange)
+			if (canChange)
 			{
 				yield return Timing.WaitForSeconds(delay);
 				IEnumerable<Player> enumerable = Player.List.Where(x => x.Team == Team.SCP);
