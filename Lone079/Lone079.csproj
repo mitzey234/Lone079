@@ -74,6 +74,9 @@
     <Reference Include="Mirror">
       <HintPath>..\..\..\..\Steam Again\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mirror.dll</HintPath>
     </Reference>
+    <Reference Include="NorthwoodLib, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EXILED.5.0.0-beta.2\lib\net472\NorthwoodLib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -92,8 +95,8 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="EventHandlers.cs" />
-    <Compile Include="Patch079.cs" />
     <Compile Include="Lone079.cs" />
+    <Compile Include="OverchargePatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -20,7 +20,7 @@ namespace Lone079
 
 			instance = this;
 
-			hInstance = new Harmony($"cyanox.lone079");
+			hInstance = new Harmony("cyanox.lone079");
 			hInstance.PatchAll();
 
 			ev = new EventHandlers();
@@ -33,6 +33,7 @@ namespace Lone079
 
 			state = true;
 			base.OnEnabled();
+			Exiled.Events.Handlers.Cassie.SendingCassieMessage += ev.OnCassie;
 		}
 
 		public override void OnDisabled()
@@ -44,6 +45,7 @@ namespace Lone079
 			Exiled.Events.Handlers.Player.Left -= ev.OnPlayerLeave;
 			Exiled.Events.Handlers.Scp106.Containing -= ev.OnScp106Contain;
 			Exiled.Events.Handlers.Warhead.Detonated -= ev.OnDetonated;
+			Exiled.Events.Handlers.Cassie.SendingCassieMessage -= ev.OnCassie;
 
 			hInstance.UnpatchAll(hInstance.Id);
 

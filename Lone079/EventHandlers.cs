@@ -1,4 +1,5 @@
 ﻿using Exiled.API.Features;
+using Exiled.API.Features.Roles;
 using Exiled.Events.EventArgs;
 using MEC;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Lone079
 		private Vector3 scp939pos;
 
 		private bool is106Contained, canChange;
+		internal static bool isLastAlive;
 
 		private List<RoleType> scp079Respawns = new List<RoleType>()
 		{
@@ -34,17 +36,17 @@ namespace Lone079
 
 		private IEnumerator<float> Check079(float delay = 1f)
 		{
-			//if (Map.ActivatedGenerators != 3 && canChange)
 			if (canChange)
 			{
 				yield return Timing.WaitForSeconds(delay);
-				IEnumerable<Player> enumerable = Player.List.Where(x => x.Role.Team == Team.SCP);
+				IEnumerable<Player> enumerable = Player.Get(Team.SCP);
 				if (!Lone079.instance.Config.CountZombies) enumerable = enumerable.Where(x => x.Role != RoleType.Scp0492);
 				List<Player> pList = enumerable.ToList();
 				if (pList.Count == 1 && pList[0].Role == RoleType.Scp079)
 				{
+					isLastAlive = true;
 					Player player = pList[0];
-					int level = ((Exiled.API.Features.Roles.Scp079Role) player.Role).Level;
+					int level = player.Role.As<Scp079Role>().Level;
 					RoleType role = scp079Respawns[rand.Next(scp079Respawns.Count)];
 					if (is106Contained && role == RoleType.Scp106) role = RoleType.Scp93953;
 					player.SetRole(role);
@@ -65,9 +67,10 @@ namespace Lone079
 
 		public void OnRoundStart()
 		{
-			Timing.CallDelayed(1f, () => scp939pos = scp079RespawnLocations[rand.Next(scp079RespawnLocations.Count)].GetRandomSpawnProperties().Item1);
+			Timing.CallDelayed(1f, () => scp939pos = SpawnpointManager.GetRandomPosition(scp079RespawnLocations[rand.Next(scp079RespawnLocations.Count)]).transform.position);
 			is106Contained = false;
 			canChange = true;
+			isLastAlive = false;
 		}
 
 		public void OnPlayerDied(DiedEventArgs ev)
@@ -79,6 +82,11 @@ namespace Lone079
 		public void OnScp106Contain(ContainingEventArgs ev)
 		{
 			is106Contained = true;
+		}
+
+		public void OnCassie(SendingCassieMessageEventArgs ev)
+		{
+			if (ev.Words.Contains("allgeneratorsengaged") && isLastAlive) ev.IsAllowed = false;
 		}
 	}
 }
